@@ -3,132 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAG Pipeline Animated Flowchart - Fixed</title>
+  <title>RAG Pipeline Animated Flowchart - Enhanced</title>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
     :root {
-      --primary: #1298d6;
-      --accent-orange: #ffad25;
-      --accent-red: #ff4e67;
-      --bg-light: #f8fbff;
+      --primary: #5c6bc0;
+      --accent-orange: #ffca28;
+      --accent-red: #ef5350;
+      --green: #66bb6a;
+      --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      --text: #37474f;
+      --node-bg: rgba(255, 255, 255, 0.9);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at 50% 50%, #ffffff, #eefbff);
-      color: #071833;
+      background: var(--bg-gradient);
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      padding: 40px 20px;
     }
 
     .title-container {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 50px;
     }
 
     .title {
-      font-size: clamp(24px, 4vw, 36px);
+      font-size: clamp(28px, 5vw, 42px);
       font-weight: 900;
       text-transform: uppercase;
-      color: #071633;
-      letter-spacing: 1px;
+      color: #1a237e;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
     }
 
     .subtitle {
-      font-size: 14px;
-      color: #517ea3;
-      font-weight: 600;
-      margin-top: 5px;
+      font-size: 16px;
+      color: #78909c;
+      font-weight: 400;
+      letter-spacing: 0.5px;
     }
 
-    /* The Stage Container */
+    /* Compact Stage */
     .stage {
       position: relative;
-      width: 1200px;
-      height: 800px;
+      width: 1000px; /* Reduced width */
+      height: 600px; /* Reduced height for compactness */
       background: white;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 30px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.03);
       overflow: hidden;
-      /* Adjust scale for smaller screens */
       transform-origin: top center;
     }
 
-    /* Grid Background */
+    /* Modern Grid */
     .stage::before {
       content: "";
       position: absolute;
       inset: 0;
-      background-image: linear-gradient(#e1effa 1px, transparent 1px), linear-gradient(90deg, #e1effa 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.4;
+      background-image: linear-gradient(#e0f2f1 1px, transparent 1px), linear-gradient(90deg, #e0f2f1 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.5;
     }
 
-    /* Nodes General Styling */
+    /* Nodes: Frosted Glass & Shimmer */
     .node {
       position: absolute;
       z-index: 10;
-      background: white;
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      background: var(--node-bg);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease;
+      transition: all 0.4s ease;
+      overflow: hidden;
+    }
+
+    .node::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(45deg);
+      transition: all 0.6s ease;
+      z-index: -1;
+    }
+
+    .node:hover::after {
+      left: 100%;
+      transition: all 0.6s ease;
     }
 
     .node:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(18, 152, 214, 0.2);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 18px 45px rgba(92, 107, 192, 0.15);
     }
 
     .header {
-      padding: 8px 12px;
-      font-size: 14px;
+      padding: 10px 16px;
+      font-size: 13px;
       font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       text-align: center;
-      background: linear-gradient(90deg, #18aef5, #66ee9d);
-      border-bottom: 1px solid #ddd;
+      background: #e8eaf6;
+      color: #3f51b5;
+      border-bottom: 1px solid #d1d9e6;
     }
 
-    .header.orange { background: linear-gradient(90deg, #ffbf3f, #ff855f); }
-    .header.red { background: linear-gradient(90deg, #ff4e67, #ff9b3d); color: white; }
+    .header.orange { background: #fff8e1; color: #f57f17; }
+    .header.red { background: #ffebee; color: #c62828; }
+    .header.green { background: #e8f5e9; color: #2e7d32; }
 
     .content {
-      padding: 12px;
+      padding: 16px;
       flex-grow: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      font-size: 13px;
     }
 
-    /* Node Specific Positions */
-    .kb { left: 50px; top: 40px; width: 280px; }
-    .clean { left: 50px; top: 180px; width: 280px; }
-    .chunk { left: 50px; top: 320px; width: 280px; }
-    .emb-left { left: 50px; top: 480px; width: 280px; }
+    /* New Specific Positions & Sizes */
+    .kb { left: 40px; top: 30px; width: 240px; }
+    .clean { left: 40px; top: 150px; width: 240px; }
+    .chunk { left: 40px; top: 270px; width: 240px; }
+    .emb-left { left: 40px; top: 390px; width: 240px; }
 
-    .store { left: 420px; top: 40px; width: 400px; height: 160px; }
-    .database { left: 420px; top: 280px; width: 400px; height: 180px; }
-    .query-node { left: 420px; top: 550px; width: 400px; border-style: dashed; border-color: #ffad25; }
+    .store { left: 350px; top: 30px; width: 340px; height: 140px; }
+    .database { left: 350px; top: 220px; width: 340px; height: 160px; }
+    .query-node { left: 350px; top: 430px; width: 340px; border-style: dashed; border-color: #ffb74d; }
 
-    .emb-right { left: 900px; top: 40px; width: 250px; }
-    .retrieval { left: 900px; top: 200px; width: 250px; }
-    .llm { left: 900px; top: 380px; width: 250px; background: #071c42; color: white; border-color: #ff4aa2; }
-    .answer { left: 900px; top: 580px; width: 250px; border-color: #00d27a; }
+    .emb-right { left: 770px; top: 30px; width: 190px; }
+    .retrieval { left: 770px; top: 170px; width: 190px; }
+    .llm { left: 770px; top: 310px; width: 190px; background: #283593; color: white; border-color: #7986cb; }
+    .answer { left: 770px; top: 470px; width: 190px; border-color: var(--green); }
 
-    /* SVG Connections */
+    /* Compact SVG Connections */
     .flow-svg {
       position: absolute;
       top: 0; left: 0;
@@ -139,77 +176,93 @@
 
     .path-line {
       fill: none;
-      stroke: #cbd5e0;
-      stroke-width: 4;
-      stroke-dasharray: 10, 10;
-      animation: dash 1s linear infinite;
+      stroke: #b0bec5;
+      stroke-width: 3;
     }
 
     .path-line.active {
       stroke: var(--primary);
-      stroke-width: 5;
+      stroke-width: 4;
+      stroke-dasharray: 8, 8; /* Subtle dashes */
+      animation: dash 1s linear infinite;
     }
 
     @keyframes dash {
-      to { stroke-dashoffset: -20; }
+      to { stroke-dashoffset: -16; }
     }
 
-    /* Inner Visuals */
-    .file-icon { font-size: 24px; }
-    .chunk-box { background: #e1f5fe; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid #b3e5fc; }
+    /* Smaller, Lighter Markers */
+    marker#arrow path {
+      fill: var(--primary);
+    }
     
-    .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-    .db-box { background: #f0f4f8; border-radius: 6px; padding: 8px; font-size: 10px; color: #334e68; }
+    marker#arrowOrange path { fill: #ffb74d; }
+    marker#arrowGreen path { fill: #81c784; }
 
-    .brain-icon { font-size: 40px; filter: drop-shadow(0 0 10px #00d9ff); }
+    /* Visual Elements */
+    .file-icon { font-size: 26px; }
+    .chunk-box { background: #e0f7fa; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; color: #006064; border: 1px solid #b2ebf2; }
+    .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+    .db-box { background: #f1f8e9; border-radius: 8px; padding: 10px; font-size: 11px; color: #558b2f; }
+    .brain-icon { font-size: 42px; filter: drop-shadow(0 0 12px rgba(121, 134, 203, 0.8)); }
 
-    /* Responsive adjustments */
-    @media (max-width: 1250px) {
-      .stage { transform: scale(0.8); margin-top: -80px; }
+    /* Simple Table */
+    table { width:100%; font-size:11px; border-collapse: collapse; color: #546e7a; }
+    table th { font-weight: 600; text-align: left; padding: 6px; border-bottom: 1px solid #eceff1;}
+    table td { padding: 6px; }
+
+    /* Responsiveness */
+    @media (max-width: 1100px) {
+      .stage { transform: scale(0.85); margin-top: -40px; }
     }
-    @media (max-width: 1000px) {
-      .stage { transform: scale(0.6); margin-top: -150px; }
+    @media (max-width: 900px) {
+      .stage { transform: scale(0.65); margin-top: -100px; }
     }
   </style>
 </head>
 <body>
 
   <div class="title-container">
-    <h1 class="title">RAG Retrieval Pipeline</h1>
+    <h1 class="title">RAG Pipeline</h1>
     <p class="subtitle">An End-to-End Visualized Flow</p>
   </div>
 
   <section class="stage">
     <svg class="flow-svg">
       <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
-          <path d="M0,0 L10,5 L0,10 Z" fill="#1298d6" />
+        <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" />
+        </marker>
+        <marker id="arrowOrange" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" />
+        </marker>
+        <marker id="arrowGreen" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" />
         </marker>
       </defs>
       
-      <path d="M190,110 L190,180" class="path-line active" marker-end="url(#arrow)" />
-      <path d="M190,250 L190,320" class="path-line active" marker-end="url(#arrow)" />
-      <path d="M190,405 L190,480" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M160,105 L160,150" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M160,225 L160,270" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M160,345 L160,390" class="path-line active" marker-end="url(#arrow)" />
       
-      <path d="M330,520 Q380,520 380,120 L420,120" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M280,430 L320,430 Q335,430 335,415 L335,115 Q335,100 350,100 L350,100" class="path-line active" marker-end="url(#arrow)" />
       
-      <path d="M620,200 L620,280" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M520,170 L520,220" class="path-line active" marker-end="url(#arrow)" />
       
-      <path d="M620,550 L620,460" class="path-line active" style="stroke:#ffad25" marker-end="url(#arrow)" />
+      <path d="M520,430 L520,380" class="path-line active" style="stroke:#ffb74d" marker-end="url(#arrowOrange)" />
       
-      <path d="M820,370 L900,260" class="path-line active" style="stroke:#ff4e67" marker-end="url(#arrow)" />
+      <path d="M690,300 Q740,300 740,260 L770,230" class="path-line active" style="stroke:#ef9a9a" marker-end="url(#arrow)" />
       
-      <path d="M1025,300 L1025,380" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M865,245 L865,310" class="path-line active" marker-end="url(#arrow)" />
       
-      <path d="M1025,505 L1025,580" class="path-line active" style="stroke:#00d27a" marker-end="url(#arrow)" />
+      <path d="M865,405 L865,470" class="path-line active" style="stroke:#81c784" marker-end="url(#arrowGreen)" />
     </svg>
 
     <div class="node kb">
       <div class="header">1. Knowledge Base</div>
       <div class="content">
-        <span class="file-icon">📄</span>
-        <span class="file-icon" style="color:#e53935">PDF</span>
-        <span class="file-icon" style="color:#1e88e5">DOCX</span>
+        <span class="file-icon" style="color:#f44336">PDF</span>
+        <span class="file-icon" style="color:#2196f3">DOCX</span>
       </div>
     </div>
 
@@ -217,23 +270,22 @@
       <div class="header">2. Text Cleaning</div>
       <div class="content">
         <span>🧹</span>
-        <div style="font-size: 11px; text-align: left;">Removing Whitespace...<br>Normalizing Text...</div>
+        <div style="color: #607d8b">Whitespace... Normalizing...</div>
       </div>
     </div>
 
     <div class="node chunk">
       <div class="header">3. Chunking</div>
       <div class="content">
-        <div class="chunk-box">Chunk A</div>
-        <div class="chunk-box">Chunk B</div>
-        <div class="chunk-box">Chunk C</div>
+        <div class="chunk-box">Chunk 1</div>
+        <div class="chunk-box">Chunk 2</div>
       </div>
     </div>
 
     <div class="node emb-left">
       <div class="header orange">4. Embeddings</div>
       <div class="content">
-        <div style="font-family: monospace; font-size: 10px;">[0.12, -0.98, 0.45...]</div>
+        <div style="font-family: monospace; color: #546e7a;">[0.1, -0.9...]</div>
         <span>⚙️</span>
       </div>
     </div>
@@ -241,10 +293,10 @@
     <div class="node store">
       <div class="header">5. FAISS Vector Store</div>
       <div class="content">
-        <table style="width:100%; font-size:10px; border-collapse: collapse;">
-          <tr style="background:#f0f0f0;"><th>ID</th><th>Vector Mapping</th><th>Status</th></tr>
-          <tr><td>#001</td><td>[0.12, -0.9...]</td><td>✅</td></tr>
-          <tr><td>#002</td><td>[0.45, 0.21...]</td><td>✅</td></tr>
+        <table>
+          <tr><th>ID</th><th>Vector Mapping</th></tr>
+          <tr><td>#1</td><td>[0.1, -0.9...]</td></tr>
+          <tr><td>#2</td><td>[0.4, 0.2...]</td></tr>
         </table>
       </div>
     </div>
@@ -254,7 +306,7 @@
       <div class="content">
         <div class="db-grid">
           <div class="db-box"><strong>Index</strong><br>HNSW / IVF</div>
-          <div class="db-box"><strong>Metadata</strong><br>Source: Doc_A</div>
+          <div class="db-box"><strong>Metadata</strong><br>Source_A</div>
         </div>
       </div>
     </div>
@@ -263,7 +315,7 @@
       <div class="header orange">User Input</div>
       <div class="content">
         <span style="font-size:20px;">💬</span>
-        <div style="font-size:13px;">"How does RAG work?"</div>
+        <div style="color: #795548">"How does RAG work?"</div>
       </div>
     </div>
 
@@ -271,8 +323,8 @@
       <div class="header red">7. Retrieval</div>
       <div class="content">
         <div style="text-align: center;">
-          <div style="font-size: 18px;">🔍</div>
-          <div style="font-size: 10px;">Similarity Search (Top K)</div>
+          <div style="font-size: 22px;">🔍</div>
+          <div style="color: #b71c1c; font-weight: 600;">Search...</div>
         </div>
       </div>
     </div>
@@ -281,13 +333,13 @@
       <div class="header red">8. LLM (GPT-4)</div>
       <div class="content">
         <div class="brain-icon">🧠</div>
-        <div style="font-size: 11px;">Generating Grounded Response...</div>
+        <div style="font-weight: 600;">Generating...</div>
       </div>
     </div>
 
     <div class="node answer">
-      <div class="header" style="background: #00d27a; color: white;">9. Grounded Answer</div>
-      <div class="content" style="font-size: 12px; font-weight: bold; color: #2e7d32;">
+      <div class="header green">9. Grounded Answer</div>
+      <div class="content" style="font-weight: 700; color: #2e7d32;">
         "RAG works by..." ✅
       </div>
     </div>
