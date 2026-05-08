@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Pipeline Animated Flowchart</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #dff8ff, transparent 35%),
+        radial-gradient(circle at bottom right, #fff1d6, transparent 35%),
+        linear-gradient(135deg, #f7fcff, #eef7ff);
+      overflow-x: hidden;
+      color: #06142e;
+    }
+
+    .background-lines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image:
+        linear-gradient(120deg, rgba(0, 170, 255, 0.18) 1px, transparent 1px),
+        linear-gradient(60deg, rgba(0, 170, 255, 0.15) 1px, transparent 1px);
+      background-size: 120px 120px;
+      animation: bgMove 12s linear infinite;
+    }
+
+    @keyframes bgMove {
+      from { background-position: 0 0; }
+      to { background-position: 120px 120px; }
+    }
+
+    .title {
+      text-align: center;
+      padding: 28px 15px 10px;
+      font-size: clamp(22px, 3vw, 38px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #071833;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: #3b5b7a;
+      margin-bottom: 25px;
+    }
+
+    .wrapper {
+      width: min(1250px, 96%);
+      margin: auto;
+      position: relative;
+      padding: 20px 0 60px;
+    }
+
+    .flowchart {
+      display: grid;
+      grid-template-columns: 280px 1fr 260px;
+      gap: 42px;
+      align-items: center;
+      position: relative;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 3px solid #128bc3;
+      border-radius: 14px;
+      box-shadow: 0 12px 25px rgba(0, 77, 128, 0.18);
+      overflow: hidden;
+      position: relative;
+      animation: floatBox 3s ease-in-out infinite;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .card:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .card:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes floatBox {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .card-header {
+      padding: 8px 12px;
+      font-weight: 800;
+      font-size: 16px;
+      text-align: center;
+      color: #041e35;
+      background: linear-gradient(90deg, #22b7ff, #76ff9e);
+      border-bottom: 2px solid rgba(0,0,0,0.1);
+    }
+
+    .yellow .card-header {
+      background: linear-gradient(90deg, #ffc145, #ff8e6e);
+    }
+
+    .pink .card-header {
+      background: linear-gradient(90deg, #ff7474, #ff62be);
+    }
+
+    .dark {
+      background: linear-gradient(135deg, #082c55, #181542);
+      color: white;
+      border-color: #ff5f8f;
+    }
+
+    .dark .card-header {
+      color: white;
+      background: linear-gradient(90deg, #ff4d79, #ffb347);
+    }
+
+    .card-body {
+      min-height: 92px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #fff, #d8f5ff);
+      border: 2px solid #3583b8;
+      box-shadow: inset 0 0 10px rgba(0, 180, 255, 0.25);
+      font-size: 28px;
+    }
+
+    .doc-line {
+      width: 130px;
+      height: 10px;
+      background: linear-gradient(90deg, #f15a5a, #ffe066, #00c896);
+      border-radius: 10px;
+      margin: 4px;
+      animation: scan 1.5s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: scaleX(0.3); opacity: 0.4; }
+      50% { transform: scaleX(1); opacity: 1; }
+      100% { transform: scaleX(0.3); opacity: 0.4; }
+    }
+
+    .chunks span {
+      display: block;
+      padding: 5px 16px;
+      margin: 5px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #041e35;
+      animation: pulseChunk 1.8s infinite;
+    }
+
+    .chunks span:nth-child(1) { background: #33e1ff; }
+    .chunks span:nth-child(2) { background: #ffb347; animation-delay: .2s; }
+    .chunks span:nth-child(3) { background: #ff6b6b; animation-delay: .4s; }
+
+    @keyframes pulseChunk {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .embedding-text {
+      font-weight: bold;
+      font-size: 13px;
+      background: #eef9ff;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px dashed #128bc3;
+    }
+
+    .middle-area {
+      display: grid;
+      grid-template-rows: auto auto auto;
+      gap: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .wide-card {
+      width: 100%;
+    }
+
+    .middle-row {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .vector-db {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .db-box {
+      background: #12375e;
+      color: white;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 78px;
+      border: 2px solid #73d7ff;
+      font-size: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .db-dots {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .db-dots i {
+      width: 8px;
+      height: 8px;
+      background: #00e5ff;
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .db-dots i:nth-child(2n) { background: #ffb347; animation-delay: .2s; }
+    .db-dots i:nth-child(3n) { background: #ff5f8f; animation-delay: .4s; }
+
+    @keyframes blink {
+      0%, 100% { opacity: .35; }
+      50% { opacity: 1; transform: scale(1.35); }
+    }
+
+    .retrieval-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #1585c7;
+      display: grid;
+      place-items: center;
+      font-size: 45px;
+      background: radial-gradient(circle, #fff, #dff8ff);
+      animation: rotateSearch 4s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes rotateSearch {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .query-box {
+      background: linear-gradient(135deg, #ffffff, #dff6ff);
+      border: 3px solid #2378c7;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0, 77, 128, 0.18);
+      animation: glowQuery 2s infinite alternate;
+    }
+
+    @keyframes glowQuery {
+      from { box-shadow: 0 0 8px rgba(0, 166, 255, 0.4); }
+      to { box-shadow: 0 0 25px rgba(0, 166, 255, 0.9); }
+    }
+
+    .brain {
+      font-size: 64px;
+      animation: brainPulse 1.8s infinite;
+      filter: drop-shadow(0 0 10px #00e5ff);
+    }
+
+    @keyframes brainPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .answer-box {
+      background: linear-gradient(135deg, #e7fbff, #ffffff);
+      border: 3px solid #0c9bb8;
+      border-radius: 14px;
+      padding: 16px;
+      font-weight: bold;
+      line-height: 1.4;
+      box-shadow: 0 12px 24px rgba(0, 77, 128, 0.18);
+      animation: answerPop 2.5s infinite;
+    }
+
+    @keyframes answerPop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .flow-line {
+      fill: none;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 18 18;
+      animation: dashMove 1s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.9));
+    }
+
+    .blue-line {
+      stroke: #00b7ff;
+    }
+
+    .orange-line {
+      stroke: #ff9f1c;
+    }
+
+    .pink-line {
+      stroke: #ff4fa3;
+    }
+
+    .green-line {
+      stroke: #00c896;
+    }
+
+    @keyframes dashMove {
+      to {
+        stroke-dashoffset: -36;
+      }
+    }
+
+    .arrow-down {
+      width: 0;
+      height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 24px solid #0aaee8;
+      margin: -18px auto -10px;
+      filter: drop-shadow(0 0 8px #00d9ff);
+      animation: arrowPulse 1s infinite;
+    }
+
+    @keyframes arrowPulse {
+      0%, 100% { transform: translateY(0); opacity: .7; }
+      50% { transform: translateY(8px); opacity: 1; }
+    }
+
+    .mini-vector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .vector-chip {
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: #58f29a;
+      border: 2px solid #0f7e46;
+      animation: chipMove 1.8s infinite;
+    }
+
+    .vector-chip:nth-child(2) {
+      background: #4cb3ff;
+      animation-delay: .2s;
+    }
+
+    .vector-chip:nth-child(3) {
+      background: #ff7777;
+      animation-delay: .4s;
+    }
+
+    @keyframes chipMove {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(8px); }
+    }
+
+    .gear {
+      display: inline-block;
+      animation: gearSpin 3s linear infinite;
+    }
+
+    @keyframes gearSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 980px) {
+      .flowchart {
+        grid-template-columns: 1fr;
+      }
+
+      .middle-row {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-svg {
+        display: none;
+      }
+
+      .column,
+      .middle-area {
+        max-width: 430px;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background-lines"></div>
+
+  <h1 class="title">Data Processing and RAG Retrieval Pipeline Flow Chart</h1>
+  <p class="subtitle">Animated flowchart for Knowledge Base, FAISS, Embeddings, Retrieval and LLM Answer Generation</p>
+
+  <div class="wrapper">
+    <svg class="flow-svg" viewBox="0 0 1250 720" preserveAspectRatio="none">
+      <path class="flow-line blue-line" d="M 275 120 C 350 120, 330 120, 390 120" />
+      <path class="flow-line blue-line" d="M 710 130 C 790 130, 810 120, 880 120" />
+      <path class="flow-line orange-line" d="M 700 330 C 770 330, 800 330, 870 330" />
+      <path class="flow-line pink-line" d="M 965 330 C 1010 330, 1015 250, 1025 210" />
+      <path class="flow-line green-line" d="M 560 520 C 600 430, 650 400, 700 330" />
+      <path class="flow-line blue-line" d="M 250 540 C 300 430, 330 260, 390 180" />
+    </svg>
+
+    <div class="flowchart">
+
+      <!-- LEFT COLUMN -->
+      <div class="column">
+        <div class="card">
+          <div class="card-header">Knowledge Base / Documents</div>
+          <div class="card-body">
+            <div class="icon">📁</div>
+            <div class="icon">🔍</div>
+            <div class="icon">📄</div>
+            <div class="icon">📘</div>
+          </div>
+        </div>
+
+        <div class="arrow-down"></div>
+
+        <div class="card">
+          <div class="card-header">Text Cleaning</div>
+          <div class="card-body">
+            <div class="icon">🧹</div>
+            <div>
+              <div class="doc-line"></div>
+              <div class="doc-line"></div>
+              <div class="doc-line"></div>
+            </div>
+            <div class="icon">♻️</div>
+          </div>
+        </div>
+
+        <div class="arrow-down"></div>
+
+        <div class="card">
+          <div class="card-header">Chunking</div>
+          <div class="card-body">
+            <div class="icon">📑</div>
+            <div class="chunks">
+              <span>Text Chunk 1</span>
+              <span>Text Chunk 2</span>
+              <span>Text Chunk 3</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow-down"></div>
+
+        <div class="card yellow">
+          <div class="card-header">Embeddings</div>
+          <div class="card-body">
+            <div class="icon">📈</div>
+            <div class="embedding-text">
+              [0.12, -0.5]<br />
+              [0.9, 0.3]<br />
+              [0.4, 0.8]
+            </div>
+            <div class="icon"><span class="gear">⚙️</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE COLUMN -->
+      <div class="middle-area">
+        <div class="card wide-card">
+          <div class="card-header">FAISS Vector Store</div>
+          <div class="card-body">
+            <div class="icon">📄</div>
+            <div class="mini-vector">
+              <span class="vector-chip">Text</span>
+              <span class="vector-chip">1</span>
+              <span class="vector-chip">0.91</span>
+            </div>
+            <div class="mini-vector">
+              <span class="vector-chip">Text</span>
+              <span class="vector-chip">2</span>
+              <span class="vector-chip">0.84</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="middle-row">
+          <div class="card">
+            <div class="card-header">FAISS Vector Database</div>
+            <div class="card-body">
+              <div class="vector-db">
+                <div class="db-box">
+                  Vector Database
+                  <div class="db-dots">
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                </div>
+
+                <div class="db-box">
+                  FAISS Index
+                  <div class="db-dots">
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card yellow">
+            <div class="card-header">Retrieval</div>
+            <div class="card-body">
+              <div class="retrieval-icon">🔎</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="query-box">
+          💬 User Query<br />
+          <span style="font-weight: 500;">“What is the capital of France?”</span>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="column">
+        <div class="card yellow">
+          <div class="card-header">Embeddings</div>
+          <div class="card-body">
+            <div class="icon">📊</div>
+            <div class="embedding-text">
+              Vector Space<br />
+              x, y, z values
+            </div>
+            <div class="icon"><span class="gear">⚙️</span></div>
+          </div>
+        </div>
+
+        <div class="arrow-down"></div>
+
+        <div class="card dark pink">
+          <div class="card-header">LLM</div>
+          <div class="card-body">
+            <div class="brain">🧠</div>
+            <div>
+              <h2>GPT-4</h2>
+              <p>Text Generation</p>
+              <p><span class="gear">⚙️</span> Processing...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow-down"></div>
+
+        <div class="answer-box">
+          Grounded Answer 👍<br /><br />
+          The capital of France is Paris.<br />
+          <small>Ref: Document A, Chunk 3</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
