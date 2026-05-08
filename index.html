@@ -3,850 +3,296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAG Pipeline Animated Flowchart</title>
+  <title>RAG Pipeline Animated Flowchart - Fixed</title>
 
   <style>
+    :root {
+      --primary: #1298d6;
+      --accent-orange: #ffad25;
+      --accent-red: #ff4e67;
+      --bg-light: #f8fbff;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Segoe UI", Arial, sans-serif;
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 8% 18%, rgba(0, 217, 255, 0.24), transparent 28%),
-        radial-gradient(circle at 92% 88%, rgba(255, 196, 74, 0.22), transparent 28%),
-        linear-gradient(135deg, #eefbff, #ffffff 55%, #f8fbff);
+      background: radial-gradient(circle at 50% 50%, #ffffff, #eefbff);
       color: #071833;
-      overflow-x: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
 
-    .page {
-      min-width: 1180px;
-      padding: 24px 20px 34px;
+    .title-container {
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     .title {
-      text-align: center;
-      font-size: 38px;
-      line-height: 1.1;
-      font-weight: 950;
-      letter-spacing: 2px;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 900;
       text-transform: uppercase;
       color: #071633;
-      margin-bottom: 8px;
-      text-shadow: 0 4px 0 rgba(0, 80, 160, 0.08);
+      letter-spacing: 1px;
     }
 
     .subtitle {
-      text-align: center;
-      font-size: 15px;
-      color: #355a78;
-      font-weight: 700;
-      margin-bottom: 14px;
+      font-size: 14px;
+      color: #517ea3;
+      font-weight: 600;
+      margin-top: 5px;
     }
 
+    /* The Stage Container */
     .stage {
-      width: 1360px;
-      height: 720px;
-      margin: 0 auto;
       position: relative;
-      border-radius: 30px;
+      width: 1200px;
+      height: 800px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      border: 1px solid rgba(0,0,0,0.05);
       overflow: hidden;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.78), rgba(230,249,255,0.6)),
-        radial-gradient(circle at 50% 40%, rgba(0, 210, 255, 0.08), transparent 35%);
-      box-shadow:
-        0 28px 70px rgba(10, 55, 90, 0.14),
-        inset 0 0 50px rgba(0, 170, 255, 0.12);
+      /* Adjust scale for smaller screens */
+      transform-origin: top center;
     }
 
+    /* Grid Background */
     .stage::before {
       content: "";
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 150, 220, 0.12) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 220, 0.12) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.35;
+      background-image: linear-gradient(#e1effa 1px, transparent 1px), linear-gradient(90deg, #e1effa 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
     }
 
-    .flow-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .flow {
-      fill: none;
-      stroke-width: 8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 18 16;
-      animation: flowMove 0.9s linear infinite;
-      filter: drop-shadow(0 0 9px rgba(0, 210, 255, 0.85));
-    }
-
-    .blue { stroke: #00bfff; }
-    .cyan { stroke: #05e6ff; }
-    .orange { stroke: #ffad25; }
-    .pink { stroke: #ff4aa2; }
-    .green { stroke: #00d27a; }
-    .purple { stroke: #8b5cff; }
-
-    @keyframes flowMove {
-      to {
-        stroke-dashoffset: -34;
-      }
-    }
-
+    /* Nodes General Styling */
     .node {
       position: absolute;
-      z-index: 4;
-      background: rgba(255, 255, 255, 0.96);
-      border: 3px solid #1298d6;
-      border-radius: 16px;
-      box-shadow:
-        0 16px 30px rgba(0, 88, 150, 0.18),
-        inset 0 0 0 1px rgba(255,255,255,0.8);
-      overflow: hidden;
-      animation: floatNode 4s ease-in-out infinite;
-    }
-
-    @keyframes floatNode {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+      z-index: 10;
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
     }
 
     .node:hover {
-      box-shadow:
-        0 0 0 4px rgba(0, 229, 255, 0.25),
-        0 20px 45px rgba(0, 88, 150, 0.26);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(18, 152, 214, 0.2);
     }
 
     .header {
-      min-height: 38px;
-      padding: 7px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 800;
       text-align: center;
-      font-size: 17px;
-      font-weight: 900;
-      color: #061a31;
       background: linear-gradient(90deg, #18aef5, #66ee9d);
-      border-bottom: 2px solid rgba(0, 50, 80, 0.15);
+      border-bottom: 1px solid #ddd;
     }
 
-    .header.orange-head {
-      background: linear-gradient(90deg, #ffbf3f, #ff855f);
-    }
-
-    .header.red-head {
-      color: white;
-      background: linear-gradient(90deg, #ff4e67, #ff9b3d);
-    }
+    .header.orange { background: linear-gradient(90deg, #ffbf3f, #ff855f); }
+    .header.red { background: linear-gradient(90deg, #ff4e67, #ff9b3d); color: white; }
 
     .content {
-      height: calc(100% - 38px);
-      padding: 14px;
+      padding: 12px;
+      flex-grow: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      text-align: center;
+      gap: 10px;
     }
 
-    .kb { left: 40px; top: 28px; width: 310px; height: 120px; }
-    .clean { left: 40px; top: 180px; width: 310px; height: 120px; }
-    .chunk { left: 40px; top: 332px; width: 310px; height: 135px; }
-    .emb-left { left: 40px; top: 515px; width: 310px; height: 125px; }
+    /* Node Specific Positions */
+    .kb { left: 50px; top: 40px; width: 280px; }
+    .clean { left: 50px; top: 180px; width: 280px; }
+    .chunk { left: 50px; top: 320px; width: 280px; }
+    .emb-left { left: 50px; top: 480px; width: 280px; }
 
-    .store { left: 455px; top: 65px; width: 480px; height: 155px; }
-    .database { left: 455px; top: 330px; width: 370px; height: 175px; }
-    .retrieval { left: 875px; top: 342px; width: 215px; height: 165px; }
-    .query-node { left: 455px; top: 600px; width: 520px; height: 78px; }
+    .store { left: 420px; top: 40px; width: 400px; height: 160px; }
+    .database { left: 420px; top: 280px; width: 400px; height: 180px; }
+    .query-node { left: 420px; top: 550px; width: 400px; border-style: dashed; border-color: #ffad25; }
 
-    .emb-right { left: 1045px; top: 88px; width: 280px; height: 140px; }
-    .llm { left: 1045px; top: 320px; width: 280px; height: 175px; }
-    .answer { left: 1045px; top: 570px; width: 280px; height: 120px; }
+    .emb-right { left: 900px; top: 40px; width: 250px; }
+    .retrieval { left: 900px; top: 200px; width: 250px; }
+    .llm { left: 900px; top: 380px; width: 250px; background: #071c42; color: white; border-color: #ff4aa2; }
+    .answer { left: 900px; top: 580px; width: 250px; border-color: #00d27a; }
 
-    .icon-card {
-      width: 60px;
-      height: 60px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(145deg, #ffffff, #dff7ff);
-      border: 2px solid #62acd4;
-      box-shadow: inset 0 0 14px rgba(0, 188, 255, 0.17);
-      font-size: 31px;
-    }
-
-    .folder {
-      width: 72px;
-      height: 52px;
-      background: linear-gradient(#ffc94a, #ff982f);
-      border: 3px solid #8a5500;
-      border-radius: 8px;
-      position: relative;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.12);
-    }
-
-    .folder::before {
-      content: "";
+    /* SVG Connections */
+    .flow-svg {
       position: absolute;
-      top: -15px;
-      left: 8px;
-      width: 35px;
-      height: 19px;
-      background: #ffcf54;
-      border: 3px solid #8a5500;
-      border-bottom: none;
-      border-radius: 6px 6px 0 0;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .magnify {
-      width: 56px;
-      height: 56px;
-      border: 8px solid #8bd8ff;
-      border-radius: 50%;
-      position: relative;
-      background: rgba(255,255,255,0.6);
+    .path-line {
+      fill: none;
+      stroke: #cbd5e0;
+      stroke-width: 4;
+      stroke-dasharray: 10, 10;
+      animation: dash 1s linear infinite;
     }
 
-    .magnify::after {
-      content: "";
-      position: absolute;
-      width: 32px;
-      height: 8px;
-      background: #245779;
-      border-radius: 99px;
-      right: -24px;
-      bottom: 0;
-      transform: rotate(45deg);
+    .path-line.active {
+      stroke: var(--primary);
+      stroke-width: 5;
     }
 
-    .file {
-      width: 54px;
-      height: 64px;
-      border: 3px solid #4d7895;
-      border-radius: 7px;
-      background: white;
-      display: grid;
-      place-items: center;
-      font-weight: 950;
+    @keyframes dash {
+      to { stroke-dashoffset: -20; }
     }
 
-    .pdf { color: #ef2a2a; background: #fff2f2; }
-    .docx { color: #1e68c8; background: #edf5ff; }
+    /* Inner Visuals */
+    .file-icon { font-size: 24px; }
+    .chunk-box { background: #e1f5fe; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid #b3e5fc; }
+    
+    .db-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    .db-box { background: #f0f4f8; border-radius: 6px; padding: 8px; font-size: 10px; color: #334e68; }
 
-    .broom {
-      font-size: 48px;
-      animation: sweep 1.8s ease-in-out infinite;
+    .brain-icon { font-size: 40px; filter: drop-shadow(0 0 10px #00d9ff); }
+
+    /* Responsive adjustments */
+    @media (max-width: 1250px) {
+      .stage { transform: scale(0.8); margin-top: -80px; }
     }
-
-    @keyframes sweep {
-      0%, 100% { transform: rotate(-8deg); }
-      50% { transform: rotate(10deg); }
-    }
-
-    .recycle {
-      font-size: 48px;
-      animation: spin 5s linear infinite;
-    }
-
-    .lines {
-      width: 110px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .lines span {
-      height: 8px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #ff6868, #ffcc4d, #4ee88c);
-      animation: lineScan 1.5s infinite ease-in-out;
-    }
-
-    .lines span:nth-child(2) { animation-delay: .2s; }
-    .lines span:nth-child(3) { animation-delay: .4s; }
-    .lines span:nth-child(4) { animation-delay: .6s; }
-
-    @keyframes lineScan {
-      0%, 100% { transform: scaleX(.45); transform-origin: left; opacity: .5; }
-      50% { transform: scaleX(1); transform-origin: left; opacity: 1; }
-    }
-
-    .chunk-machine {
-      width: 105px;
-      height: 82px;
-      border-radius: 14px;
-      background: linear-gradient(145deg, #dff5ff, #96b8c7);
-      border: 3px solid #53758d;
-      display: grid;
-      place-items: center;
-    }
-
-    .chunk-machine::before {
-      content: "";
-      width: 48px;
-      height: 48px;
-      border-radius: 10px;
-      background: #26384a;
-      box-shadow: inset 0 0 0 4px #476d8a;
-    }
-
-    .chunk-list {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      width: 140px;
-    }
-
-    .chunk-list span {
-      padding: 7px 10px;
-      border-radius: 9px;
-      font-weight: 950;
-      font-size: 14px;
-      box-shadow: inset 0 -3px rgba(0,0,0,.12);
-      animation: chunkPulse 1.7s infinite;
-    }
-
-    .chunk-list span:nth-child(1) { background: #51e9ff; }
-    .chunk-list span:nth-child(2) { background: #ffba49; animation-delay: .2s; }
-    .chunk-list span:nth-child(3) { background: #ff6767; animation-delay: .4s; }
-
-    @keyframes chunkPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
-    }
-
-    .vector-text {
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.35;
-      padding: 10px 12px;
-      border: 2px dashed #299bd0;
-      border-radius: 10px;
-      background: #f2fcff;
-    }
-
-    .gear {
-      font-size: 44px;
-      display: inline-block;
-      animation: spin 4s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .store-doc {
-      width: 85px;
-      height: 100px;
-      border: 3px solid #4b7894;
-      border-radius: 8px;
-      background: white;
-      padding: 12px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .store-doc span {
-      height: 7px;
-      border-radius: 999px;
-      background: #8dbfdc;
-    }
-
-    .store-doc span:nth-child(2) { background: #ff6b6b; }
-    .store-doc span:nth-child(3) { background: #ffd166; }
-    .store-doc span:nth-child(4) { background: #06d6a0; }
-
-    .store-map {
-      display: grid;
-      gap: 8px;
-      width: 330px;
-    }
-
-    .store-row {
-      display: grid;
-      grid-template-columns: 78px 46px 58px 46px;
-      gap: 8px;
-      align-items: center;
-      font-weight: 950;
-      font-size: 14px;
-    }
-
-    .pill {
-      padding: 7px 8px;
-      border-radius: 8px;
-      text-align: center;
-      border: 2px solid rgba(0,0,0,.16);
-      box-shadow: inset 0 -3px rgba(0,0,0,.12);
-    }
-
-    .p-green { background: #67ef78; }
-    .p-blue { background: #4dccff; }
-    .p-orange { background: #ffb347; }
-    .p-red { background: #ff6b6b; }
-    .p-purple { background: #bb7cff; }
-
-    .db-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .db-panel {
-      min-height: 108px;
-      border-radius: 12px;
-      padding: 11px;
-      background: linear-gradient(145deg, #0d2b50, #173c68);
-      border: 3px solid #76cdf7;
-      color: white;
-      font-weight: 950;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .dot-grid {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
-    }
-
-    .dot-grid i {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #00e5ff;
-      animation: dotBlink 1.1s infinite;
-    }
-
-    .dot-grid i:nth-child(2n) { background: #ffbb45; animation-delay: .15s; }
-    .dot-grid i:nth-child(3n) { background: #ff5d9e; animation-delay: .3s; }
-
-    @keyframes dotBlink {
-      0%, 100% { opacity: .3; transform: scale(.85); }
-      50% { opacity: 1; transform: scale(1.35); }
-    }
-
-    .numbers {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 9px;
-      font-size: 11px;
-      text-align: left;
-      font-weight: 800;
-      color: #08213a;
-    }
-
-    .numbers div {
-      background: #e7f8ff;
-      border-radius: 7px;
-      padding: 5px 7px;
-      border: 1px solid #72c4ef;
-    }
-
-    .search-circle {
-      width: 112px;
-      height: 112px;
-      border-radius: 50%;
-      border: 6px solid #1094d6;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle, #ffffff, #c9f3ff);
-      position: relative;
-      animation: glow 1.8s infinite alternate;
-    }
-
-    .search-circle::after {
-      content: "";
-      position: absolute;
-      width: 52px;
-      height: 12px;
-      background: #fb7a45;
-      border: 2px solid #923a1d;
-      border-radius: 999px;
-      right: -34px;
-      bottom: 8px;
-      transform: rotate(45deg);
-    }
-
-    .search-circle span {
-      width: 27px;
-      height: 27px;
-      border-radius: 50%;
-      background: #7ddcff;
-      border: 4px solid #6b4cb8;
-      animation: searchMove 2s ease-in-out infinite;
-    }
-
-    @keyframes searchMove {
-      0%, 100% { transform: translate(-18px, 15px); }
-      50% { transform: translate(20px, -14px); }
-    }
-
-    @keyframes glow {
-      from { box-shadow: 0 0 10px rgba(0, 220, 255, .45); }
-      to { box-shadow: 0 0 28px rgba(0, 220, 255, .95); }
-    }
-
-    .query-node {
-      z-index: 4;
-      border-radius: 18px;
-      border: 3px solid #166fb8;
-      background: linear-gradient(135deg, #ffffff, #dff7ff);
-      box-shadow: 0 16px 30px rgba(0, 88, 150, 0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 17px;
-      font-weight: 950;
-      text-align: center;
-      position: absolute;
-    }
-
-    .chat-icon {
-      font-size: 42px;
-      animation: bounce 1.5s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-7px); }
-    }
-
-    .llm {
-      background: linear-gradient(135deg, #071c42, #171044);
-      color: white;
-      border-color: #ff4b88;
-    }
-
-    .brain {
-      font-size: 70px;
-      filter: drop-shadow(0 0 16px #00d9ff);
-      animation: brainPulse 1.8s ease-in-out infinite;
-    }
-
-    @keyframes brainPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.12); }
-    }
-
-    .llm-text h2 {
-      font-size: 29px;
-      margin-bottom: 4px;
-    }
-
-    .llm-text p {
-      font-size: 14px;
-      font-weight: 850;
-      opacity: .92;
-    }
-
-    .answer {
-      background: rgba(255, 255, 255, 0.96);
-      border-color: #0aa8b8;
-      padding: 15px 17px;
-      font-weight: 950;
-      line-height: 1.35;
-      animation: answerPop 2.2s infinite ease-in-out;
-    }
-
-    .answer-title {
-      color: #076b79;
-      margin-bottom: 10px;
-      font-size: 17px;
-      font-weight: 950;
-    }
-
-    .answer-main {
-      display: flex;
-      gap: 11px;
-      align-items: flex-start;
-    }
-
-    .check {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #18d58a;
-      color: white;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      font-size: 25px;
-      box-shadow: inset 0 -4px rgba(0,0,0,.15);
-    }
-
-    @keyframes answerPop {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.035); }
-    }
-
-    @media (max-width: 1200px) {
-      .page {
-        min-width: 100%;
-      }
-
-      .stage {
-        transform: scale(0.82);
-        transform-origin: top center;
-        margin-bottom: -110px;
-      }
+    @media (max-width: 1000px) {
+      .stage { transform: scale(0.6); margin-top: -150px; }
     }
   </style>
 </head>
-
 <body>
-  <main class="page">
-    <h1 class="title">Data Processing and RAG Retrieval Pipeline Flow Chart</h1>
-    <p class="subtitle">Knowledge Base → Text Cleaning → Chunking → Embeddings → FAISS → Retrieval → LLM → Grounded Answer</p>
 
-    <section class="stage">
+  <div class="title-container">
+    <h1 class="title">RAG Retrieval Pipeline</h1>
+    <p class="subtitle">An End-to-End Visualized Flow</p>
+  </div>
 
-      <svg class="flow-svg" viewBox="0 0 1360 720" preserveAspectRatio="none">
-        <defs>
-          <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M1,1 L9,5 L1,9 Z" fill="#00bfff"></path>
-          </marker>
+  <section class="stage">
+    <svg class="flow-svg">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#1298d6" />
+        </marker>
+      </defs>
+      
+      <path d="M190,110 L190,180" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M190,250 L190,320" class="path-line active" marker-end="url(#arrow)" />
+      <path d="M190,405 L190,480" class="path-line active" marker-end="url(#arrow)" />
+      
+      <path d="M330,520 Q380,520 380,120 L420,120" class="path-line active" marker-end="url(#arrow)" />
+      
+      <path d="M620,200 L620,280" class="path-line active" marker-end="url(#arrow)" />
+      
+      <path d="M620,550 L620,460" class="path-line active" style="stroke:#ffad25" marker-end="url(#arrow)" />
+      
+      <path d="M820,370 L900,260" class="path-line active" style="stroke:#ff4e67" marker-end="url(#arrow)" />
+      
+      <path d="M1025,300 L1025,380" class="path-line active" marker-end="url(#arrow)" />
+      
+      <path d="M1025,505 L1025,580" class="path-line active" style="stroke:#00d27a" marker-end="url(#arrow)" />
+    </svg>
 
-          <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M1,1 L9,5 L1,9 Z" fill="#ffad25"></path>
-          </marker>
+    <div class="node kb">
+      <div class="header">1. Knowledge Base</div>
+      <div class="content">
+        <span class="file-icon">📄</span>
+        <span class="file-icon" style="color:#e53935">PDF</span>
+        <span class="file-icon" style="color:#1e88e5">DOCX</span>
+      </div>
+    </div>
 
-          <marker id="arrowPink" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M1,1 L9,5 L1,9 Z" fill="#ff4aa2"></path>
-          </marker>
+    <div class="node clean">
+      <div class="header">2. Text Cleaning</div>
+      <div class="content">
+        <span>🧹</span>
+        <div style="font-size: 11px; text-align: left;">Removing Whitespace...<br>Normalizing Text...</div>
+      </div>
+    </div>
 
-          <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M1,1 L9,5 L1,9 Z" fill="#00d27a"></path>
-          </marker>
-        </defs>
+    <div class="node chunk">
+      <div class="header">3. Chunking</div>
+      <div class="content">
+        <div class="chunk-box">Chunk A</div>
+        <div class="chunk-box">Chunk B</div>
+        <div class="chunk-box">Chunk C</div>
+      </div>
+    </div>
 
-        <!-- Left vertical flow -->
-        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 148 L195 180" />
-        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 300 L195 332" />
-        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 467 L195 515" />
+    <div class="node emb-left">
+      <div class="header orange">4. Embeddings</div>
+      <div class="content">
+        <div style="font-family: monospace; font-size: 10px;">[0.12, -0.98, 0.45...]</div>
+        <span>⚙️</span>
+      </div>
+    </div>
 
-        <!-- Left embeddings to FAISS vector store -->
-        <path class="flow cyan" marker-end="url(#arrowBlue)"
-          d="M350 575 C410 560, 385 145, 455 140" />
+    <div class="node store">
+      <div class="header">5. FAISS Vector Store</div>
+      <div class="content">
+        <table style="width:100%; font-size:10px; border-collapse: collapse;">
+          <tr style="background:#f0f0f0;"><th>ID</th><th>Vector Mapping</th><th>Status</th></tr>
+          <tr><td>#001</td><td>[0.12, -0.9...]</td><td>✅</td></tr>
+          <tr><td>#002</td><td>[0.45, 0.21...]</td><td>✅</td></tr>
+        </table>
+      </div>
+    </div>
 
-        <!-- Knowledge base to FAISS vector store -->
-        <path class="flow cyan" marker-end="url(#arrowBlue)"
-          d="M350 88 C395 88, 410 88, 455 88" />
-
-        <!-- Store to database -->
-        <path class="flow purple" marker-end="url(#arrowBlue)"
-          d="M690 220 C690 265, 620 280, 620 330" />
-
-        <!-- Store to right embeddings -->
-        <path class="flow orange" marker-end="url(#arrowOrange)"
-          d="M935 140 C975 140, 1000 140, 1045 140" />
-
-        <!-- Database to retrieval -->
-        <path class="flow orange" marker-end="url(#arrowOrange)"
-          d="M825 420 C845 420, 855 420, 875 420" />
-
-        <!-- Retrieval to LLM -->
-        <path class="flow pink" marker-end="url(#arrowPink)"
-          d="M1090 422 C1110 422, 1022 408, 1045 408" />
-
-        <!-- Right embeddings to LLM -->
-        <path class="flow pink" marker-end="url(#arrowPink)"
-          d="M1185 228 L1185 320" />
-
-        <!-- LLM to answer -->
-        <path class="flow blue" marker-end="url(#arrowBlue)"
-          d="M1185 495 L1185 570" />
-
-        <!-- User query to database -->
-        <path class="flow green" marker-end="url(#arrowGreen)"
-          d="M720 600 C735 560, 765 535, 780 505" />
-      </svg>
-
-      <!-- LEFT SIDE -->
-      <div class="node kb">
-        <div class="header">Knowledge Base / Documents</div>
-        <div class="content">
-          <div class="folder"></div>
-          <div class="magnify"></div>
-          <div class="file pdf">PDF</div>
-          <div class="file docx">DOCX</div>
+    <div class="node database">
+      <div class="header">6. Vector Database</div>
+      <div class="content">
+        <div class="db-grid">
+          <div class="db-box"><strong>Index</strong><br>HNSW / IVF</div>
+          <div class="db-box"><strong>Metadata</strong><br>Source: Doc_A</div>
         </div>
       </div>
+    </div>
 
-      <div class="node clean">
-        <div class="header">Text Cleaning</div>
-        <div class="content">
-          <div class="broom">🧹</div>
-          <div class="recycle">♻️</div>
-          <div class="lines">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+    <div class="node query-node">
+      <div class="header orange">User Input</div>
+      <div class="content">
+        <span style="font-size:20px;">💬</span>
+        <div style="font-size:13px;">"How does RAG work?"</div>
+      </div>
+    </div>
+
+    <div class="node retrieval">
+      <div class="header red">7. Retrieval</div>
+      <div class="content">
+        <div style="text-align: center;">
+          <div style="font-size: 18px;">🔍</div>
+          <div style="font-size: 10px;">Similarity Search (Top K)</div>
         </div>
       </div>
+    </div>
 
-      <div class="node chunk">
-        <div class="header">Chunking</div>
-        <div class="content">
-          <div class="chunk-machine"></div>
-          <div class="chunk-list">
-            <span>Text Chunk 1</span>
-            <span>Text Chunk 2</span>
-            <span>Text Chunk 3</span>
-          </div>
-        </div>
+    <div class="node llm">
+      <div class="header red">8. LLM (GPT-4)</div>
+      <div class="content">
+        <div class="brain-icon">🧠</div>
+        <div style="font-size: 11px;">Generating Grounded Response...</div>
       </div>
+    </div>
 
-      <div class="node emb-left">
-        <div class="header orange-head">Embeddings</div>
-        <div class="content">
-          <div class="icon-card">📈</div>
-          <div class="vector-text">
-            [0.12, -0.5]<br>
-            [0.9, 0.3]<br>
-            [0.4, 0.8]
-          </div>
-          <div class="gear">⚙️</div>
-        </div>
+    <div class="node answer">
+      <div class="header" style="background: #00d27a; color: white;">9. Grounded Answer</div>
+      <div class="content" style="font-size: 12px; font-weight: bold; color: #2e7d32;">
+        "RAG works by..." ✅
       </div>
+    </div>
 
-      <!-- MIDDLE -->
-      <div class="node store">
-        <div class="header">FAISS Vector Store</div>
-        <div class="content">
-          <div class="store-doc">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+  </section>
 
-          <div class="store-map">
-            <div class="store-row">
-              <div class="pill p-green">Text</div>
-              <div class="pill p-blue">1</div>
-              <div class="pill p-red">0.91</div>
-              <div class="pill p-green">✓</div>
-            </div>
-
-            <div class="store-row">
-              <div class="pill p-orange">Text</div>
-              <div class="pill p-blue">2</div>
-              <div class="pill p-orange">0.84</div>
-              <div class="pill p-blue">✓</div>
-            </div>
-
-            <div class="store-row">
-              <div class="pill p-purple">Text</div>
-              <div class="pill p-blue">3</div>
-              <div class="pill p-red">0.78</div>
-              <div class="pill p-orange">✓</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="node database">
-        <div class="header">FAISS Vector Database</div>
-        <div class="content">
-          <div class="db-grid">
-            <div class="db-panel">
-              Vector Database
-              <div class="dot-grid">
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-                <i></i><i></i><i></i><i></i><i></i>
-              </div>
-            </div>
-
-            <div class="db-panel">
-              FAISS Index
-              <div class="numbers">
-                <div>10.2, -0.5, 0.3</div>
-                <div>10.1, 0.2, -0.1</div>
-                <div>10.3, -0.4, 0.8</div>
-                <div>10.5, -0.5, 0.2</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="node retrieval">
-        <div class="header red-head">Retrieval</div>
-        <div class="content">
-          <div class="search-circle">
-            <span></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="query-node">
-        <div class="chat-icon">💬</div>
-        <div>
-          <div>User Query</div>
-          <div style="font-weight:700; margin-top:4px;">“What is the capital of France?”</div>
-        </div>
-      </div>
-
-      <!-- RIGHT SIDE -->
-      <div class="node emb-right">
-        <div class="header orange-head">Embeddings</div>
-        <div class="content">
-          <div class="icon-card">📊</div>
-          <div class="vector-text">
-            Vector Space<br>
-            x, y, z values
-          </div>
-          <div class="gear">⚙️</div>
-        </div>
-      </div>
-
-      <div class="node llm">
-        <div class="header red-head">LLM</div>
-        <div class="content">
-          <div class="brain">🧠</div>
-          <div class="llm-text">
-            <h2>GPT-4</h2>
-            <p>Text Generation</p>
-            <p>⚙ Processing...</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="node answer">
-        <div class="answer-title">Grounded Answer 👍</div>
-        <div class="answer-main">
-          <div class="check">✓</div>
-          <div>
-            The capital of France is Paris.<br>
-            <small>Ref: Document A, Chunk 3</small>
-          </div>
-        </div>
-      </div>
-
-    </section>
-  </main>
 </body>
 </html>
