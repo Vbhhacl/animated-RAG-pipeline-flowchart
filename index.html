@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Animated RAG Flowchart</title>
+  <title>RAG Pipeline Animated Flowchart</title>
 
   <style>
     * {
@@ -16,173 +16,183 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(circle at 15% 20%, rgba(0, 221, 255, 0.22), transparent 28%),
-        radial-gradient(circle at 90% 80%, rgba(255, 190, 70, 0.22), transparent 26%),
-        linear-gradient(135deg, #eefaff, #ffffff 55%, #f8fbff);
-      overflow-x: hidden;
+        radial-gradient(circle at 8% 18%, rgba(0, 217, 255, 0.24), transparent 28%),
+        radial-gradient(circle at 92% 88%, rgba(255, 196, 74, 0.22), transparent 28%),
+        linear-gradient(135deg, #eefbff, #ffffff 55%, #f8fbff);
       color: #071833;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 150, 220, 0.13) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 220, 0.13) 1px, transparent 1px);
-      background-size: 70px 70px;
-      opacity: 0.35;
-      pointer-events: none;
+      overflow-x: auto;
     }
 
     .page {
-      width: 100%;
-      min-height: 100vh;
-      padding: 22px 24px 30px;
-      position: relative;
+      min-width: 1180px;
+      padding: 24px 20px 34px;
     }
 
     .title {
       text-align: center;
-      font-size: clamp(26px, 3.1vw, 46px);
-      line-height: 1.08;
+      font-size: 38px;
+      line-height: 1.1;
       font-weight: 950;
       letter-spacing: 2px;
-      color: #071633;
       text-transform: uppercase;
+      color: #071633;
+      margin-bottom: 8px;
       text-shadow: 0 4px 0 rgba(0, 80, 160, 0.08);
-      margin-bottom: 6px;
     }
 
     .subtitle {
       text-align: center;
       font-size: 15px;
-      color: #32536f;
+      color: #355a78;
+      font-weight: 700;
       margin-bottom: 14px;
-      font-weight: 600;
-    }
-
-    .stage-wrap {
-      width: min(1480px, 98vw);
-      margin: 0 auto;
     }
 
     .stage {
-      width: 100%;
-      aspect-ratio: 16 / 8.6;
-      min-height: 690px;
+      width: 1360px;
+      height: 720px;
+      margin: 0 auto;
       position: relative;
-      border-radius: 28px;
+      border-radius: 30px;
       overflow: hidden;
       background:
-        linear-gradient(135deg, rgba(255,255,255,0.75), rgba(236,250,255,0.55)),
-        radial-gradient(circle at 50% 50%, rgba(0, 198, 255, 0.09), transparent 36%);
+        linear-gradient(135deg, rgba(255,255,255,0.78), rgba(230,249,255,0.6)),
+        radial-gradient(circle at 50% 40%, rgba(0, 210, 255, 0.08), transparent 35%);
       box-shadow:
-        inset 0 0 50px rgba(0, 170, 255, 0.08),
-        0 25px 70px rgba(10, 55, 90, 0.12);
+        0 28px 70px rgba(10, 55, 90, 0.14),
+        inset 0 0 50px rgba(0, 170, 255, 0.12);
     }
 
-    .network {
+    .stage::before {
+      content: "";
       position: absolute;
       inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 150, 220, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 150, 220, 0.12) 1px, transparent 1px);
+      background-size: 60px 60px;
       opacity: 0.35;
-      background:
-        radial-gradient(circle at 8% 14%, #4bb6e8 0 4px, transparent 5px),
-        radial-gradient(circle at 18% 40%, #4bb6e8 0 3px, transparent 4px),
-        radial-gradient(circle at 82% 10%, #4bb6e8 0 4px, transparent 5px),
-        radial-gradient(circle at 92% 26%, #4bb6e8 0 3px, transparent 4px),
-        linear-gradient(25deg, transparent 0 18%, rgba(56, 150, 200, .45) 18.2%, transparent 18.4%),
-        linear-gradient(145deg, transparent 0 12%, rgba(56, 150, 200, .35) 12.2%, transparent 12.4%),
-        linear-gradient(70deg, transparent 0 76%, rgba(56, 150, 200, .35) 76.2%, transparent 76.4%);
+    }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
       pointer-events: none;
     }
 
-    .card {
+    .flow {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 18 16;
+      animation: flowMove 0.9s linear infinite;
+      filter: drop-shadow(0 0 9px rgba(0, 210, 255, 0.85));
+    }
+
+    .blue { stroke: #00bfff; }
+    .cyan { stroke: #05e6ff; }
+    .orange { stroke: #ffad25; }
+    .pink { stroke: #ff4aa2; }
+    .green { stroke: #00d27a; }
+    .purple { stroke: #8b5cff; }
+
+    @keyframes flowMove {
+      to {
+        stroke-dashoffset: -34;
+      }
+    }
+
+    .node {
       position: absolute;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.94);
+      z-index: 4;
+      background: rgba(255, 255, 255, 0.96);
       border: 3px solid #1298d6;
+      border-radius: 16px;
       box-shadow:
-        0 16px 28px rgba(0, 88, 150, 0.18),
-        inset 0 0 0 1px rgba(255,255,255,0.7);
+        0 16px 30px rgba(0, 88, 150, 0.18),
+        inset 0 0 0 1px rgba(255,255,255,0.8);
       overflow: hidden;
-      z-index: 5;
-      animation: floatCard 4s ease-in-out infinite;
+      animation: floatNode 4s ease-in-out infinite;
     }
 
-    @keyframes floatCard {
+    @keyframes floatNode {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-4px); }
     }
 
-    .card:hover {
+    .node:hover {
       box-shadow:
         0 0 0 4px rgba(0, 229, 255, 0.25),
-        0 22px 42px rgba(0, 88, 150, 0.25);
+        0 20px 45px rgba(0, 88, 150, 0.26);
     }
 
-    .head {
-      min-height: 42px;
-      padding: 8px 12px;
-      text-align: center;
-      font-weight: 900;
-      font-size: 18px;
-      color: #061a31;
-      background: linear-gradient(90deg, #19aaf5, #66ef9c);
-      border-bottom: 2px solid rgba(0, 50, 80, 0.16);
+    .header {
+      min-height: 38px;
+      padding: 7px 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 900;
+      color: #061a31;
+      background: linear-gradient(90deg, #18aef5, #66ee9d);
+      border-bottom: 2px solid rgba(0, 50, 80, 0.15);
     }
 
-    .head.orange {
-      background: linear-gradient(90deg, #ffbf3f, #ff835f);
+    .header.orange-head {
+      background: linear-gradient(90deg, #ffbf3f, #ff855f);
     }
 
-    .head.red {
+    .header.red-head {
       color: white;
       background: linear-gradient(90deg, #ff4e67, #ff9b3d);
     }
 
-    .body {
-      padding: 16px;
-      min-height: calc(100% - 42px);
+    .content {
+      height: calc(100% - 38px);
+      padding: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
+      text-align: center;
     }
 
-    .kb { left: 35px; top: 34px; width: 320px; height: 132px; }
-    .clean { left: 35px; top: 204px; width: 320px; height: 128px; }
-    .chunk { left: 35px; top: 370px; width: 320px; height: 140px; }
-    .emb-left { left: 35px; top: 555px; width: 320px; height: 130px; }
+    .kb { left: 40px; top: 28px; width: 310px; height: 120px; }
+    .clean { left: 40px; top: 180px; width: 310px; height: 120px; }
+    .chunk { left: 40px; top: 332px; width: 310px; height: 135px; }
+    .emb-left { left: 40px; top: 515px; width: 310px; height: 125px; }
 
-    .top-store { left: 465px; top: 70px; width: 520px; height: 168px; }
-    .db { left: 455px; top: 330px; width: 410px; height: 190px; }
-    .retrieval { left: 930px; top: 350px; width: 220px; height: 190px; }
-    .query { left: 455px; top: 585px; width: 560px; height: 78px; }
+    .store { left: 455px; top: 65px; width: 480px; height: 155px; }
+    .database { left: 455px; top: 330px; width: 370px; height: 175px; }
+    .retrieval { left: 875px; top: 342px; width: 215px; height: 165px; }
+    .query-node { left: 455px; top: 600px; width: 520px; height: 78px; }
 
-    .emb-right { right: 42px; top: 105px; width: 310px; height: 150px; }
-    .llm { right: 42px; top: 330px; width: 310px; height: 190px; }
-    .answer { right: 42px; top: 590px; width: 310px; height: 120px; }
+    .emb-right { left: 1045px; top: 88px; width: 280px; height: 140px; }
+    .llm { left: 1045px; top: 320px; width: 280px; height: 175px; }
+    .answer { left: 1045px; top: 570px; width: 280px; height: 120px; }
 
-    .icon-box {
-      width: 66px;
-      height: 66px;
-      border-radius: 14px;
+    .icon-card {
+      width: 60px;
+      height: 60px;
+      border-radius: 13px;
       display: grid;
       place-items: center;
       background: linear-gradient(145deg, #ffffff, #dff7ff);
-      border: 2px solid #61a9d2;
-      box-shadow: inset 0 0 14px rgba(0, 188, 255, 0.18);
-      font-size: 34px;
+      border: 2px solid #62acd4;
+      box-shadow: inset 0 0 14px rgba(0, 188, 255, 0.17);
+      font-size: 31px;
     }
 
     .folder {
-      width: 76px;
-      height: 54px;
+      width: 72px;
+      height: 52px;
       background: linear-gradient(#ffc94a, #ff982f);
       border: 3px solid #8a5500;
       border-radius: 8px;
@@ -193,103 +203,53 @@
     .folder::before {
       content: "";
       position: absolute;
-      top: -16px;
+      top: -15px;
       left: 8px;
-      width: 36px;
-      height: 20px;
+      width: 35px;
+      height: 19px;
       background: #ffcf54;
       border: 3px solid #8a5500;
       border-bottom: none;
       border-radius: 6px 6px 0 0;
     }
 
-    .doc {
-      width: 58px;
-      height: 72px;
-      border: 3px solid #4d7895;
-      border-radius: 6px;
-      background: white;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 12px 8px;
-    }
-
-    .doc span {
-      height: 6px;
-      background: #7cb5d9;
-      border-radius: 99px;
-    }
-
-    .pdf {
-      background: linear-gradient(#fff, #ffe9e9);
-      color: #ef2a2a;
-      font-weight: 900;
-      display: grid;
-      place-items: center;
-    }
-
-    .docx {
-      background: linear-gradient(#fff, #e9f2ff);
-      color: #1e68c8;
-      font-weight: 900;
-      display: grid;
-      place-items: center;
-    }
-
     .magnify {
-      width: 60px;
-      height: 60px;
+      width: 56px;
+      height: 56px;
       border: 8px solid #8bd8ff;
       border-radius: 50%;
       position: relative;
-      background: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.6);
     }
 
     .magnify::after {
       content: "";
       position: absolute;
-      width: 35px;
-      height: 9px;
+      width: 32px;
+      height: 8px;
       background: #245779;
       border-radius: 99px;
-      right: -25px;
-      bottom: 1px;
+      right: -24px;
+      bottom: 0;
       transform: rotate(45deg);
     }
 
-    .lines {
-      width: 130px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .file {
+      width: 54px;
+      height: 64px;
+      border: 3px solid #4d7895;
+      border-radius: 7px;
+      background: white;
+      display: grid;
+      place-items: center;
+      font-weight: 950;
     }
 
-    .lines span {
-      height: 9px;
-      border-radius: 99px;
-      background: linear-gradient(90deg, #ff6868, #ffcc4d, #4ee88c);
-      animation: lineScan 1.6s infinite ease-in-out;
-    }
-
-    .lines span:nth-child(2) { animation-delay: .2s; }
-    .lines span:nth-child(3) { animation-delay: .4s; }
-    .lines span:nth-child(4) { animation-delay: .6s; }
-
-    @keyframes lineScan {
-      0%, 100% { transform: scaleX(.45); opacity: .5; transform-origin: left; }
-      50% { transform: scaleX(1); opacity: 1; transform-origin: left; }
-    }
-
-    .recycle {
-      font-size: 54px;
-      animation: spin 5s linear infinite;
-    }
+    .pdf { color: #ef2a2a; background: #fff2f2; }
+    .docx { color: #1e68c8; background: #edf5ff; }
 
     .broom {
-      font-size: 56px;
-      filter: drop-shadow(0 5px 4px rgba(0,0,0,.14));
+      font-size: 48px;
       animation: sweep 1.8s ease-in-out infinite;
     }
 
@@ -298,21 +258,48 @@
       50% { transform: rotate(10deg); }
     }
 
+    .recycle {
+      font-size: 48px;
+      animation: spin 5s linear infinite;
+    }
+
+    .lines {
+      width: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .lines span {
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff6868, #ffcc4d, #4ee88c);
+      animation: lineScan 1.5s infinite ease-in-out;
+    }
+
+    .lines span:nth-child(2) { animation-delay: .2s; }
+    .lines span:nth-child(3) { animation-delay: .4s; }
+    .lines span:nth-child(4) { animation-delay: .6s; }
+
+    @keyframes lineScan {
+      0%, 100% { transform: scaleX(.45); transform-origin: left; opacity: .5; }
+      50% { transform: scaleX(1); transform-origin: left; opacity: 1; }
+    }
+
     .chunk-machine {
-      width: 120px;
-      height: 90px;
+      width: 105px;
+      height: 82px;
       border-radius: 14px;
       background: linear-gradient(145deg, #dff5ff, #96b8c7);
       border: 3px solid #53758d;
-      position: relative;
       display: grid;
       place-items: center;
     }
 
     .chunk-machine::before {
       content: "";
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 10px;
       background: #26384a;
       box-shadow: inset 0 0 0 4px #476d8a;
@@ -321,15 +308,15 @@
     .chunk-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      width: 145px;
+      gap: 7px;
+      width: 140px;
     }
 
     .chunk-list span {
-      padding: 8px 10px;
+      padding: 7px 10px;
       border-radius: 9px;
-      font-weight: 900;
-      text-align: center;
+      font-weight: 950;
+      font-size: 14px;
       box-shadow: inset 0 -3px rgba(0,0,0,.12);
       animation: chunkPulse 1.7s infinite;
     }
@@ -344,17 +331,17 @@
     }
 
     .vector-text {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       line-height: 1.35;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border: 2px dashed #299bd0;
       border-radius: 10px;
       background: #f2fcff;
     }
 
     .gear {
-      font-size: 50px;
+      font-size: 44px;
       display: inline-block;
       animation: spin 4s linear infinite;
     }
@@ -364,20 +351,20 @@
     }
 
     .store-doc {
-      width: 88px;
-      height: 110px;
+      width: 85px;
+      height: 100px;
       border: 3px solid #4b7894;
       border-radius: 8px;
       background: white;
-      padding: 14px 10px;
+      padding: 12px 10px;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
     }
 
     .store-doc span {
       height: 7px;
-      border-radius: 99px;
+      border-radius: 999px;
       background: #8dbfdc;
     }
 
@@ -387,23 +374,24 @@
 
     .store-map {
       display: grid;
-      gap: 10px;
-      flex: 1;
+      gap: 8px;
+      width: 330px;
     }
 
     .store-row {
       display: grid;
-      grid-template-columns: 80px 46px 46px 46px;
-      gap: 10px;
+      grid-template-columns: 78px 46px 58px 46px;
+      gap: 8px;
       align-items: center;
-      font-weight: 900;
+      font-weight: 950;
+      font-size: 14px;
     }
 
     .pill {
-      padding: 8px 8px;
+      padding: 7px 8px;
       border-radius: 8px;
       text-align: center;
-      border: 2px solid rgba(0,0,0,.18);
+      border: 2px solid rgba(0,0,0,.16);
       box-shadow: inset 0 -3px rgba(0,0,0,.12);
     }
 
@@ -416,31 +404,32 @@
     .db-grid {
       width: 100%;
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .db-panel {
-      min-height: 118px;
+      min-height: 108px;
       border-radius: 12px;
-      padding: 12px;
+      padding: 11px;
       background: linear-gradient(145deg, #0d2b50, #173c68);
       border: 3px solid #76cdf7;
       color: white;
-      font-weight: 900;
+      font-weight: 950;
       text-align: center;
+      font-size: 13px;
     }
 
     .dot-grid {
       margin-top: 12px;
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
     }
 
     .dot-grid i {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #00e5ff;
       animation: dotBlink 1.1s infinite;
@@ -457,9 +446,9 @@
     .numbers {
       display: flex;
       flex-direction: column;
-      gap: 7px;
-      margin-top: 10px;
-      font-size: 12px;
+      gap: 6px;
+      margin-top: 9px;
+      font-size: 11px;
       text-align: left;
       font-weight: 800;
       color: #08213a;
@@ -468,13 +457,13 @@
     .numbers div {
       background: #e7f8ff;
       border-radius: 7px;
-      padding: 5px 8px;
+      padding: 5px 7px;
       border: 1px solid #72c4ef;
     }
 
     .search-circle {
-      width: 122px;
-      height: 122px;
+      width: 112px;
+      height: 112px;
       border-radius: 50%;
       border: 6px solid #1094d6;
       display: grid;
@@ -487,19 +476,19 @@
     .search-circle::after {
       content: "";
       position: absolute;
-      width: 55px;
+      width: 52px;
       height: 12px;
       background: #fb7a45;
       border: 2px solid #923a1d;
-      border-radius: 99px;
+      border-radius: 999px;
       right: -34px;
-      bottom: 10px;
+      bottom: 8px;
       transform: rotate(45deg);
     }
 
     .search-circle span {
-      width: 28px;
-      height: 28px;
+      width: 27px;
+      height: 27px;
       border-radius: 50%;
       background: #7ddcff;
       border: 4px solid #6b4cb8;
@@ -507,31 +496,32 @@
     }
 
     @keyframes searchMove {
-      0%, 100% { transform: translate(-18px, 16px); }
+      0%, 100% { transform: translate(-18px, 15px); }
       50% { transform: translate(20px, -14px); }
     }
 
     @keyframes glow {
       from { box-shadow: 0 0 10px rgba(0, 220, 255, .45); }
-      to { box-shadow: 0 0 30px rgba(0, 220, 255, .95); }
+      to { box-shadow: 0 0 28px rgba(0, 220, 255, .95); }
     }
 
-    .query {
+    .query-node {
+      z-index: 4;
       border-radius: 18px;
       border: 3px solid #166fb8;
       background: linear-gradient(135deg, #ffffff, #dff7ff);
-      box-shadow: 0 16px 28px rgba(0, 88, 150, 0.18);
+      box-shadow: 0 16px 30px rgba(0, 88, 150, 0.18);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      font-weight: 900;
+      gap: 17px;
+      font-weight: 950;
       text-align: center;
-      z-index: 5;
+      position: absolute;
     }
 
     .chat-icon {
-      font-size: 44px;
+      font-size: 42px;
       animation: bounce 1.5s infinite;
     }
 
@@ -547,7 +537,7 @@
     }
 
     .brain {
-      font-size: 74px;
+      font-size: 70px;
       filter: drop-shadow(0 0 16px #00d9ff);
       animation: brainPulse 1.8s ease-in-out infinite;
     }
@@ -558,51 +548,48 @@
     }
 
     .llm-text h2 {
-      font-size: 30px;
+      font-size: 29px;
       margin-bottom: 4px;
     }
 
     .llm-text p {
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 850;
       opacity: .92;
     }
 
     .answer {
-      position: absolute;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.95);
-      border: 3px solid #0aa8b8;
-      box-shadow: 0 16px 28px rgba(0, 88, 150, 0.18);
-      padding: 18px 20px;
-      font-weight: 900;
+      background: rgba(255, 255, 255, 0.96);
+      border-color: #0aa8b8;
+      padding: 15px 17px;
+      font-weight: 950;
       line-height: 1.35;
-      z-index: 5;
       animation: answerPop 2.2s infinite ease-in-out;
     }
 
     .answer-title {
       color: #076b79;
-      margin-bottom: 12px;
-      font-size: 18px;
+      margin-bottom: 10px;
+      font-size: 17px;
+      font-weight: 950;
     }
 
     .answer-main {
       display: flex;
-      gap: 12px;
+      gap: 11px;
       align-items: flex-start;
     }
 
     .check {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: #18d58a;
       color: white;
       display: grid;
       place-items: center;
       flex: 0 0 auto;
-      font-size: 28px;
+      font-size: 25px;
       box-shadow: inset 0 -4px rgba(0,0,0,.15);
     }
 
@@ -611,85 +598,15 @@
       50% { transform: scale(1.035); }
     }
 
-    .flow-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      pointer-events: none;
-    }
+    @media (max-width: 1200px) {
+      .page {
+        min-width: 100%;
+      }
 
-    .flow {
-      fill: none;
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 22 18;
-      animation: moveDash 1s linear infinite;
-      filter: drop-shadow(0 0 10px rgba(0, 221, 255, .8));
-    }
-
-    .thin {
-      stroke-width: 8;
-    }
-
-    .blue { stroke: #00bfff; }
-    .cyan { stroke: #05e6ff; }
-    .green { stroke: #00d27a; }
-    .orange { stroke: #ffab25; }
-    .pink { stroke: #ff4aa2; }
-    .purple { stroke: #8b5cff; }
-
-    @keyframes moveDash {
-      to { stroke-dashoffset: -40; }
-    }
-
-    .down-arrow {
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-left: 18px solid transparent;
-      border-right: 18px solid transparent;
-      border-top: 30px solid #20bdf5;
-      z-index: 4;
-      filter: drop-shadow(0 0 10px #00d9ff);
-      animation: arrowPulse 1s infinite;
-    }
-
-    .a1 { left: 177px; top: 173px; }
-    .a2 { left: 177px; top: 339px; }
-    .a3 { left: 177px; top: 520px; }
-    .a4 { right: 176px; top: 266px; }
-    .a5 { right: 176px; top: 538px; }
-
-    @keyframes arrowPulse {
-      0%, 100% { transform: translateY(0); opacity: .75; }
-      50% { transform: translateY(8px); opacity: 1; }
-    }
-
-    @media (max-width: 1100px) {
       .stage {
-        min-height: 1200px;
-        aspect-ratio: auto;
-      }
-
-      .card, .query, .answer {
-        position: relative;
-        left: auto !important;
-        right: auto !important;
-        top: auto !important;
-        width: min(92%, 520px) !important;
-        height: auto !important;
-        margin: 22px auto;
-      }
-
-      .flow-svg, .down-arrow {
-        display: none;
-      }
-
-      .body {
-        min-height: 110px;
+        transform: scale(0.82);
+        transform-origin: top center;
+        margin-bottom: -110px;
       }
     }
   </style>
@@ -700,228 +617,236 @@
     <h1 class="title">Data Processing and RAG Retrieval Pipeline Flow Chart</h1>
     <p class="subtitle">Knowledge Base → Text Cleaning → Chunking → Embeddings → FAISS → Retrieval → LLM → Grounded Answer</p>
 
-    <div class="stage-wrap">
-      <section class="stage">
-        <div class="network"></div>
+    <section class="stage">
 
-        <svg class="flow-svg" viewBox="0 0 1480 790" preserveAspectRatio="none">
-          <defs>
-            <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-              <path d="M2,2 L10,6 L2,10 Z" fill="#00bfff"></path>
-            </marker>
+      <svg class="flow-svg" viewBox="0 0 1360 720" preserveAspectRatio="none">
+        <defs>
+          <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M1,1 L9,5 L1,9 Z" fill="#00bfff"></path>
+          </marker>
 
-            <marker id="arrowOrange" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-              <path d="M2,2 L10,6 L2,10 Z" fill="#ffab25"></path>
-            </marker>
+          <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M1,1 L9,5 L1,9 Z" fill="#ffad25"></path>
+          </marker>
 
-            <marker id="arrowPink" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-              <path d="M2,2 L10,6 L2,10 Z" fill="#ff4aa2"></path>
-            </marker>
+          <marker id="arrowPink" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M1,1 L9,5 L1,9 Z" fill="#ff4aa2"></path>
+          </marker>
 
-            <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-              <path d="M2,2 L10,6 L2,10 Z" fill="#00d27a"></path>
-            </marker>
-          </defs>
+          <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M1,1 L9,5 L1,9 Z" fill="#00d27a"></path>
+          </marker>
+        </defs>
 
-          <path class="flow cyan" marker-end="url(#arrowBlue)"
-            d="M355 105 C410 105, 405 105, 460 105" />
+        <!-- Left vertical flow -->
+        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 148 L195 180" />
+        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 300 L195 332" />
+        <path class="flow blue" marker-end="url(#arrowBlue)" d="M195 467 L195 515" />
 
-          <path class="flow blue" marker-end="url(#arrowBlue)"
-            d="M355 620 C410 600, 385 210, 460 160" />
+        <!-- Left embeddings to FAISS vector store -->
+        <path class="flow cyan" marker-end="url(#arrowBlue)"
+          d="M350 575 C410 560, 385 145, 455 140" />
 
-          <path class="flow purple thin" marker-end="url(#arrowBlue)"
-            d="M730 238 C730 280, 615 280, 615 330" />
+        <!-- Knowledge base to FAISS vector store -->
+        <path class="flow cyan" marker-end="url(#arrowBlue)"
+          d="M350 88 C395 88, 410 88, 455 88" />
 
-          <path class="flow orange thin" marker-end="url(#arrowOrange)"
-            d="M865 425 C895 425, 900 425, 930 425" />
+        <!-- Store to database -->
+        <path class="flow purple" marker-end="url(#arrowBlue)"
+          d="M690 220 C690 265, 620 280, 620 330" />
 
-          <path class="flow orange" marker-end="url(#arrowOrange)"
-            d="M985 155 C1035 155, 1060 155, 1120 155" />
+        <!-- Store to right embeddings -->
+        <path class="flow orange" marker-end="url(#arrowOrange)"
+          d="M935 140 C975 140, 1000 140, 1045 140" />
 
-          <path class="flow pink" marker-end="url(#arrowPink)"
-            d="M1245 255 C1245 285, 1245 300, 1245 330" />
+        <!-- Database to retrieval -->
+        <path class="flow orange" marker-end="url(#arrowOrange)"
+          d="M825 420 C845 420, 855 420, 875 420" />
 
-          <path class="flow pink thin" marker-end="url(#arrowPink)"
-            d="M1150 425 C1180 425, 1200 425, 1215 425" />
+        <!-- Retrieval to LLM -->
+        <path class="flow pink" marker-end="url(#arrowPink)"
+          d="M1090 422 C1110 422, 1022 408, 1045 408" />
 
-          <path class="flow purple" marker-end="url(#arrowBlue)"
-            d="M1245 520 C1245 548, 1245 558, 1245 590" />
+        <!-- Right embeddings to LLM -->
+        <path class="flow pink" marker-end="url(#arrowPink)"
+          d="M1185 228 L1185 320" />
 
-          <path class="flow green thin" marker-end="url(#arrowGreen)"
-            d="M710 585 C740 545, 755 535, 775 520" />
-        </svg>
+        <!-- LLM to answer -->
+        <path class="flow blue" marker-end="url(#arrowBlue)"
+          d="M1185 495 L1185 570" />
 
-        <div class="down-arrow a1"></div>
-        <div class="down-arrow a2"></div>
-        <div class="down-arrow a3"></div>
-        <div class="down-arrow a4"></div>
-        <div class="down-arrow a5"></div>
+        <!-- User query to database -->
+        <path class="flow green" marker-end="url(#arrowGreen)"
+          d="M720 600 C735 560, 765 535, 780 505" />
+      </svg>
 
-        <div class="card kb">
-          <div class="head">Knowledge Base / Documents</div>
-          <div class="body">
-            <div class="folder"></div>
-            <div class="magnify"></div>
-            <div class="doc pdf">PDF</div>
-            <div class="doc docx">DOCX</div>
+      <!-- LEFT SIDE -->
+      <div class="node kb">
+        <div class="header">Knowledge Base / Documents</div>
+        <div class="content">
+          <div class="folder"></div>
+          <div class="magnify"></div>
+          <div class="file pdf">PDF</div>
+          <div class="file docx">DOCX</div>
+        </div>
+      </div>
+
+      <div class="node clean">
+        <div class="header">Text Cleaning</div>
+        <div class="content">
+          <div class="broom">🧹</div>
+          <div class="recycle">♻️</div>
+          <div class="lines">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         </div>
+      </div>
 
-        <div class="card clean">
-          <div class="head">Text Cleaning</div>
-          <div class="body">
-            <div class="broom">🧹</div>
-            <div class="recycle">♻️</div>
-            <div class="lines">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+      <div class="node chunk">
+        <div class="header">Chunking</div>
+        <div class="content">
+          <div class="chunk-machine"></div>
+          <div class="chunk-list">
+            <span>Text Chunk 1</span>
+            <span>Text Chunk 2</span>
+            <span>Text Chunk 3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="node emb-left">
+        <div class="header orange-head">Embeddings</div>
+        <div class="content">
+          <div class="icon-card">📈</div>
+          <div class="vector-text">
+            [0.12, -0.5]<br>
+            [0.9, 0.3]<br>
+            [0.4, 0.8]
+          </div>
+          <div class="gear">⚙️</div>
+        </div>
+      </div>
+
+      <!-- MIDDLE -->
+      <div class="node store">
+        <div class="header">FAISS Vector Store</div>
+        <div class="content">
+          <div class="store-doc">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="store-map">
+            <div class="store-row">
+              <div class="pill p-green">Text</div>
+              <div class="pill p-blue">1</div>
+              <div class="pill p-red">0.91</div>
+              <div class="pill p-green">✓</div>
+            </div>
+
+            <div class="store-row">
+              <div class="pill p-orange">Text</div>
+              <div class="pill p-blue">2</div>
+              <div class="pill p-orange">0.84</div>
+              <div class="pill p-blue">✓</div>
+            </div>
+
+            <div class="store-row">
+              <div class="pill p-purple">Text</div>
+              <div class="pill p-blue">3</div>
+              <div class="pill p-red">0.78</div>
+              <div class="pill p-orange">✓</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="card chunk">
-          <div class="head">Chunking</div>
-          <div class="body">
-            <div class="chunk-machine"></div>
-            <div class="chunk-list">
-              <span>Text Chunk 1</span>
-              <span>Text Chunk 2</span>
-              <span>Text Chunk 3</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card emb-left">
-          <div class="head orange">Embeddings</div>
-          <div class="body">
-            <div class="icon-box">📈</div>
-            <div class="vector-text">
-              [0.12, -0.5]<br>
-              [0.9, 0.3]<br>
-              [0.4, 0.8]
-            </div>
-            <div class="gear">⚙️</div>
-          </div>
-        </div>
-
-        <div class="card top-store">
-          <div class="head">FAISS Vector Store</div>
-          <div class="body">
-            <div class="store-doc">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-
-            <div class="store-map">
-              <div class="store-row">
-                <div class="pill p-green">Text</div>
-                <div class="pill p-blue">1</div>
-                <div class="pill p-red">0.91</div>
-                <div class="pill p-green">✓</div>
-              </div>
-
-              <div class="store-row">
-                <div class="pill p-orange">Text</div>
-                <div class="pill p-blue">2</div>
-                <div class="pill p-orange">0.84</div>
-                <div class="pill p-blue">✓</div>
-              </div>
-
-              <div class="store-row">
-                <div class="pill p-purple">Text</div>
-                <div class="pill p-blue">3</div>
-                <div class="pill p-red">0.78</div>
-                <div class="pill p-orange">✓</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card db">
-          <div class="head">FAISS Vector Database</div>
-          <div class="body">
-            <div class="db-grid">
-              <div class="db-panel">
-                Vector Database
-                <div class="dot-grid">
-                  <i></i><i></i><i></i><i></i><i></i><i></i>
-                  <i></i><i></i><i></i><i></i><i></i><i></i>
-                  <i></i><i></i><i></i><i></i><i></i><i></i>
-                </div>
-              </div>
-
-              <div class="db-panel">
-                FAISS Index
-                <div class="numbers">
-                  <div>10.2, -0.5, 0.3</div>
-                  <div>10.1, 0.2, -0.1</div>
-                  <div>10.3, -0.4, 0.8</div>
-                  <div>10.5, -0.5, 0.2</div>
-                </div>
+      <div class="node database">
+        <div class="header">FAISS Vector Database</div>
+        <div class="content">
+          <div class="db-grid">
+            <div class="db-panel">
+              Vector Database
+              <div class="dot-grid">
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
+                <i></i><i></i><i></i><i></i><i></i>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="card retrieval">
-          <div class="head red">Retrieval</div>
-          <div class="body">
-            <div class="search-circle">
-              <span></span>
+            <div class="db-panel">
+              FAISS Index
+              <div class="numbers">
+                <div>10.2, -0.5, 0.3</div>
+                <div>10.1, 0.2, -0.1</div>
+                <div>10.3, -0.4, 0.8</div>
+                <div>10.5, -0.5, 0.2</div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="query">
-          <div class="chat-icon">💬</div>
+      <div class="node retrieval">
+        <div class="header red-head">Retrieval</div>
+        <div class="content">
+          <div class="search-circle">
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="query-node">
+        <div class="chat-icon">💬</div>
+        <div>
+          <div>User Query</div>
+          <div style="font-weight:700; margin-top:4px;">“What is the capital of France?”</div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="node emb-right">
+        <div class="header orange-head">Embeddings</div>
+        <div class="content">
+          <div class="icon-card">📊</div>
+          <div class="vector-text">
+            Vector Space<br>
+            x, y, z values
+          </div>
+          <div class="gear">⚙️</div>
+        </div>
+      </div>
+
+      <div class="node llm">
+        <div class="header red-head">LLM</div>
+        <div class="content">
+          <div class="brain">🧠</div>
+          <div class="llm-text">
+            <h2>GPT-4</h2>
+            <p>Text Generation</p>
+            <p>⚙ Processing...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="node answer">
+        <div class="answer-title">Grounded Answer 👍</div>
+        <div class="answer-main">
+          <div class="check">✓</div>
           <div>
-            <div>User Query</div>
-            <div style="font-weight:700; margin-top:4px;">“What is the capital of France?”</div>
+            The capital of France is Paris.<br>
+            <small>Ref: Document A, Chunk 3</small>
           </div>
         </div>
+      </div>
 
-        <div class="card emb-right">
-          <div class="head orange">Embeddings</div>
-          <div class="body">
-            <div class="icon-box">📊</div>
-            <div class="vector-text">
-              Vector Space<br>
-              x, y, z values
-            </div>
-            <div class="gear">⚙️</div>
-          </div>
-        </div>
-
-        <div class="card llm">
-          <div class="head red">LLM</div>
-          <div class="body">
-            <div class="brain">🧠</div>
-            <div class="llm-text">
-              <h2>GPT-4</h2>
-              <p>Text Generation</p>
-              <p>⚙ Processing...</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="answer">
-          <div class="answer-title">Grounded Answer 👍</div>
-          <div class="answer-main">
-            <div class="check">✓</div>
-            <div>
-              The capital of France is Paris.<br>
-              <small>Ref: Document A, Chunk 3</small>
-            </div>
-          </div>
-        </div>
-
-      </section>
-    </div>
+    </section>
   </main>
 </body>
 </html>
